@@ -1,5 +1,5 @@
 ---
-title: "Three machine learning models to predict the *classe*-outcome in the dataset *Wearable Computing: Accelerometers Data Classification of Body Postures and Movements*"
+title: "Using CART, Boosting and Random Forests to predict the *classe*-outcome in the dataset *Wearable Computing: Accelerometers Data Classification of Body Postures and Movements*"
 subtitle: 'Practical Machine Learning Course, Peer Graded Assisgnment'
 author: "Luis David Bedon Gomez"
 date: "27 9 2017"
@@ -68,7 +68,7 @@ The structure of $pml\_training$ shows diverse types of columns, mostly of class
 
 
 ```{r, message=FALSE, echo=FALSE}
-str(pml_training,list.len=18)
+str(pml_training,vec.len=2,digits.d=3,list.len=18)
 ```
 
 ### Column *classe*
@@ -76,7 +76,7 @@ str(pml_training,list.len=18)
 Of special interest is the column $classe$, which contains the group factors and constitutes the outcome to predict. This column consists of characters "A" to "E" and contains no NA's:
 
 ```{r, message=FALSE, echo=FALSE,cache=TRUE}
-str(pml_training$classe)
+str(pml_training$classe,give.length = c(1:5))
 table(pml_training$classe)
 # Convert Classe to a factor variable
 pml_training$classe<-as.factor(pml_training$classe)
@@ -147,12 +147,12 @@ For every model several parameters were changed and the accuracy of the predicti
 
 The results can be seen in the following table. The code used for each model can be found in the Appendix.
 
-|Prediction Model|Accuracy| Subpartition pml_training2| No. of Covariates| Add. Parameters | Computing Time training function [s] |
+|Prediction Model|Accuracy| Subpartition pml_training2| No. of Covar.| Add. Parameters | Computing Time training function [s] |
 |----------------|--------|-----------|----|-------------|-------------------------|
 |CART *rpart*    |66%|    75/25     | 52 |    -    | 6  |  
 |Random Tree *rf*|87.19%|    75/25     | 4  | ntree=10 | 23  |
 |Random Tree *rf*|88.21%|    75/25     | 4  | ntree=100 | 138  |
-|Random Tree *rf*|**99.63%**|    75/25     | 52 | ntree=10 | 131  | 
+|Random Tree *rf*|**99.63%**|    75/25     | 52 | ntree=10 | **131**  | 
 |Boosting *gbm*  |48%|    75/25     | 52 | shrinkage=0.01, ntree=100  |   8.5   | 
 |Boosting *gbm*  |97.1%|    75/25     | 52 | shrinkage 0.7, ntree=100  |   8.6   | 
 |Boosting *gbm*  |**99.55%**|    75/25     | 52 | shrinkage 0.7, ntree=300  |   **24.7** | 
@@ -162,11 +162,9 @@ The results can be seen in the following table. The code used for each model can
 
 From the results in the table presented in section 3 we corroborate several concepts tough in class:
 
-- It is extremely important to avoid overfitting by making subpartitions of the training data. We see this in the first CART model with the overfitted data and an accuracy of only ...%. Choosing the data partition improved the final accuracy to ...%
-
 - The predictions rely on the quality of the collected data and small amounts of data can not be compensated by better algorithms. The prediction accuracy is enormously better taking the 53 columns than only a few of them.
 
-- Both Random Forest and Boosting reach a very high accuracy of 99.6% and 99.y% respectively. The training time for the RF-method was 2.11min compared to only 24.7s for boosting. 
+- Both Random Forest and Boosting reach a very high accuracy of 99.63% and 99.55% respectively. The training time for the RF-method was 2.11min compared to only 24.7s for boosting. 
 
 - The shrinkage plays a very important role in the boosting algorithm. Here, a high shrinkage value produced a considerable better result, increasing the accuracy in more then 100%, from 48% to 97.1%.
 

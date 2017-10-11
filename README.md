@@ -3,8 +3,8 @@
 This repository contains projects done as part of the Data Science Specialization from the Johns Hopkins University on Coursera.
 
 ## Regression Analysis Course
-<a href="Datasethttps://github.com/lbedon/DataScienceSpecialization/blob/master/07RegressionModels/PeerGradedAssignment110917.pdf">
- Three Regression Models to Assess the Impact of Different Variables on mpg-values in the mtcars-dataset </a>
+<a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/07RegressionModels/PeerGradedAssignment110917.pdf">
+ Three Regression Models to Assess the Impact of Different Variables on mpg-values in the mtcars-Dataset </a>
 
 ## Statistical Inference Course
 

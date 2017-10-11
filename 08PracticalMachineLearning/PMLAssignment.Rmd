@@ -1,0 +1,272 @@
+---
+title: |-
+  Practical Machine Learning Course
+  Peer Graded Assignment
+author: "Luis David Bedon Gomez"
+date: "27 9 2017"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+\LaTex
+
+# 1. Executive summary
+The following report describes two machine learning models to predict the way in which exercises were done after the data collected by Ugulino et al. in "Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements".
+
+Ugulino et al. consider 5 activity classes, gathered from 4 subjects wearing accelerometers mounted on four different parts of the body and provide a public domain dataset comprising 165,633 samples.
+
+This dataset was loaded. After an exploratory data analysis, 52 covariates were selected to predict the activity classes described in the dataset.
+
+A random-tree-model, a random-forest-model and a boosting model were applied strategically changing parameters and comparing the testing accuracy. 
+
+The random-forest-model and the boosting model trained over all 53 variables showed a very well prediction accuracy of 99,6%. 
+
+Based on this model, the predictions asked in the course were done.
+
+# 2. Data Processing
+
+## 2.1 Loading the Data
+
+The datasets were loaded from the given URLs and imported in R using $read.csv()$. In this analysis, the libraries $caret$ and $gbm$ were used.
+
+
+```{r setup, include=TRUE, echo=TRUE, message=FALSE}
+
+library(caret)
+library(gbm)
+library(knitr)
+#library(ggplot2)
+#library(dplyr)
+
+# Download the data
+setwd("~/Coursera/08PracticalMachineLearning")
+if(file.exists("pml-training.csv")==FALSE){
+  urlTrain<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+  urlTest<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+  download.file(urlTrain,"pml-training.csv")
+  download.file(urlTest,"pml-testing.csv")
+}
+
+# Load the data
+pml_training<-read.csv("pml-training.csv",stringsAsFactors = FALSE)
+pml_testing<-read.csv("pml-testing.csv",stringsAsFactors = FALSE)
+```
+
+## 2.2 Exploratory Data Analysis
+
+### Examinating the data
+
+The imported files consist in an training dataset $pml\_training$ with 19622 rows and 160 columns, and a quiz dataset $pml\_testing$ with 20 rows and the same number of columns.
+
+```{r, message=FALSE, echo=FALSE,cache=TRUE}
+#Exploration
+kable(data.frame("pml_training"=dim(pml_training),"pml_testing"=dim(pml_testing),row.names = c("No. of Measurements","No. of Covariates")))#,format="latex"
+```
+
+In order to avoid any type of overfitting, the dataset for the quiz will be not inspected.
+
+The structure of $pml\_training$ shows diverse types of columns, mostly of class $int$, $num$, but also $chr$, some of them with a considerable amount of NA's:
+
+
+```{r, message=FALSE, echo=FALSE}
+str(pml_training,list.len=18)
+```
+
+### Column *classe*
+
+Of special interest is the column $classe$, which contains the group factors and constitutes the outcome to predict. This column consists of characters "A" to "E" and contains no NA's:
+
+```{r, message=FALSE, echo=FALSE,cache=TRUE}
+str(pml_training$classe)
+table(pml_training$classe)
+# Convert Classe to a factor variable
+pml_training$classe<-as.factor(pml_training$classe)
+```
+
+
+## 2.3 Preselecting Covariates
+
+As we saw above, not every column represents signal to be used for prediction. To select the right covariates, we first use the function $nearZeroVar()$ from the $caret$-package. It returns a vector with the index of the near-zero columns and we create a new variable *pml\_training1* eliminating the near-zero columns. This reduces the column-number by 60.
+
+Parallel, we create also a new variable *pml\_testing1* replicating the changes in the training data, but only without further examination of the testing set.
+
+
+```{r, message=FALSE, cache=TRUE}
+# Preprocessing and analizing possible covariates -> Class Video W206.mp4
+## Near Zero Predictors
+zeroCovar<-nearZeroVar(pml_training,saveMetrics = 0)
+length(zeroCovar)
+
+pml_training1<-pml_training[,-zeroCovar]
+pml_testing1<-pml_testing[,-zeroCovar]
+
+```
+
+Remaining columns containing NA's and strings are also removed, as well as columns with heading information, leading to a pair of variables *pml\_trainig2* and *pml\_testing2* with each 53 columns.
+
+```{r, message=FALSE, include=FALSE, cache=TRUE}
+## NA's: N_NA for every predictor -> table&plot -> eliminate NA-Columns
+numberNA<-sapply(1:dim(pml_testing1)[2],function(x) sum(is.na(pml_training1[,x])))
+table(numberNA,1:100)
+plot(numberNA)
+pml_training2<-pml_training1[,grep(0,numberNA)]
+pml_testing2<-pml_testing1[,grep(0,numberNA)]
+
+
+## Eliminate char-columns
+numberChar<-sapply(1:dim(pml_testing2)[2],function(x) as.integer(is.character(pml_training2[,x])))
+pml_training2<-pml_training2[,grep(0,numberChar)]
+pml_testing2<-pml_testing2[,grep(0,numberChar)]
+
+
+## Eliminate heading-columns
+str(pml_training2)
+boxplot(pml_training2[,5]~pml_training$classe)
+### eliminate first 3 columns
+pml_training2<-pml_training2[,-c(1,2,3)]
+pml_testing2<-pml_testing2[,-c(1,2,3)]
+str(pml_training2)
+
+## Remove past files
+rm(pml_testing)
+rm(pml_testing1)
+rm(pml_training)
+rm(pml_training1)
+
+```
+
+
+# 3. Prediction Models
+
+In order to firm the knowledge gained in the course, 3 prediction models were used: 
+
+- a CART model, 
+- a Random Tree model and 
+- a Boosting model. 
+
+For every model several parameters were changed and the accuracy of the predictions to the testing data $pml\_testing2$ registered, among with the processing time to train the model. 
+
+The results can be seen in the following table. The code used for each model can be found in the Appendix.
+
+|Prediction Model|Accuracy| Subpartition pml_training2| No. of Covariates| Add. Parameters | Computing Time training function [s] |
+|----------------|--------|-----------|----|-------------|-------------------------|
+|CART *rpart*    |66%|    75/25     | 52 |    -    | 6  |  
+|Random Tree *rf*|87.19%|    75/25     | 4  | ntree=10 | 23  |
+|Random Tree *rf*|88.21%|    75/25     | 4  | ntree=100 | 138  |
+|Random Tree *rf*|**99.6%**|    75/25     | 52 | ntree=10 | 131  | 
+|Boosting *gbm*  |48%|    75/25     | 52 | shrinkage=0.01, ntree=100  |   8.5   | 
+|Boosting *gbm*  |97.1%|    75/25     | 52 | shrinkage 0.7, ntree=100  |   8.6   | 
+|Boosting *gbm*  |**99.55%**|    75/25     | 52 | shrinkage 0.7, ntree=300  |   24.7 | 
+
+
+# 4. Results
+
+From the results in the table presented in section 3 we corroborate several concepts tough in class:
+
+- It is extremely important to avoid overfitting by making subpartitions of the training data. We see this in the first CART model with the overfitted data  and an accuracy of only ...%. Choosing the data partition improved the final accuracy to ...%
+
+- The predictions rely on the quality of the collected data and small amounts of data can not be compensated by better algorithms. The prediction accuracy is enormously better taking the 53 columns than only a few of them.
+
+- Both Random Forest and Boosting reach a very high accuracy of 99.x% and 99.y% respectively. The training time for the RF-method was 2.11min compared to only xs for boosting. 
+
+The prediction for the quiz was doing two times, one with the RF-model and the Boosting-model. Both methods give the following results:
+
+```{r, echo=FALSE}
+results<-(data.frame("Question"=seq(1,20),"Prediction"=c("B","A","B", "A", "A", "E", "D", "B", "A", "A", "B", "C", "B", "A", "E", "E", "A" ,"B" ,"B", "B")))
+kable(results)
+```
+
+
+# Appendix
+
+##A1 CART
+
+```{r,cache=TRUE,message=FALSE,results='hide'}
+
+#Train with different methods
+## CART - rpart
+
+### classe vs all columns and rpart, with subpartition
+set.seed(62433)
+inTrain<-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
+CARTtrain<-pml_training2[inTrain,]
+CARTtest<-pml_training2[-inTrain,]
+t1<-Sys.time()
+modelFitCART<-train(classe~.,data=CARTtrain,method="rpart")
+t2<-Sys.time()
+predCART<-predict(modelFitCART,CARTtest)
+confusionMatrix(predCART,CARTtest$classe) # Accuracy only 66%!!!
+```
+
+
+## A2 Random Forest
+
+```{r,cache=TRUE,message=FALSE,results='hide'}
+## 
+### classe vs only 3 columns and random forest with new subpartition
+set.seed(62433)
+inTrain<-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
+RFtrain<-pml_training2[inTrain,]
+RFtest<-pml_training2[-inTrain,]
+t1<-Sys.time()
+modelFitRF3<-train(classe~roll_belt+pitch_belt+yaw_belt+total_accel_belt,method="rf",ntree=100,data=RFtrain)
+t2<-Sys.time()
+predRF3<-predict(modelFitRF3,RFtest)
+confusionMatrix(predRF3,RFtest$classe)
+predRF3test<-predict(modelFitRF3,pml_testing2)
+# With 4 variables roll_belt+pitch_belt+yaw_belt+total_accel_belt
+# accuracy 86.97% and 18s computing time with ntree=10. With ntre=100, 138s computing time and 88.21% accuracy.
+```
+
+
+
+```{r,cache=TRUE,message=FALSE,results='hide'}
+### classe vs all columns and random forest with subpartition
+set.seed(62433)
+inTrain<-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
+RFtrain<-pml_training2[inTrain,]
+RFtest<-pml_training2[-inTrain,]
+t1<-Sys.time()
+modelFitRFpart<-train(classe~.,method="rf",ntree=10,data=RFtrain)
+t2<-Sys.time()
+predRFpart<-predict(modelFitRFpart,RFtest)
+confusionMatrix(predRFpart,RFtest$classe) # Accuracy up to 99,63%!!! Und jetzt kein Overfitting!!! In nur 2.11 Minuten!!!!!!!!!!!!
+
+
+## Final Prediction
+predRFtest<-predict(modelFitRFpart,pml_testing2)
+predRFtest
+
+
+```
+
+## A3 Boosting
+
+```{r,cache=TRUE,message=FALSE,results='hide'}
+
+### classe vs all and boosting with subpartition
+set.seed(62433)
+inTrain<-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
+RFtrain<-pml_training2[inTrain,]
+RFtest<-pml_training2[-inTrain,]
+t1<-Sys.time()
+modelFitBoost<-gbm(classe~.,n.trees=300,data=RFtrain,distribution="multinomial",shrinkage = .7,verbose=FALSE)
+t2<-Sys.time()
+predBoost<-predict.gbm(modelFitBoost,RFtest,n.trees=300)
+predBoost<-predBoost/max(predBoost)                             # normalize
+predBoostMax<-as.factor(sapply(1:dim(RFtest)[1], function(x) which.max(predBoost[x,,])))                                     # pick up the maximum
+levels(predBoostMax)<-c("A","B","C","D","E")                    # convert to factor
+confusionMatrix(predBoostMax,RFtest$classe)
+
+```
+
+<!-- # Parameters   Accuracy only 47% -->
+<!-- # n.trees     shrinkage     duration     accuracy -->
+<!-- # 100         0.001         8.54s         48% -->
+<!-- # 100         0.7           8.63s         97.1% -->
+<!-- # 200         0.7           16.55s        98.92% -->
+<!-- # 200         0.75          16.55s        98.92% -->
+<!-- # 300         0.7           24.7s         99.55% -->
+
+

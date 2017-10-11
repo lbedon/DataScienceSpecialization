@@ -1,0 +1,291 @@
+---
+title: Three Regression Models to Assess the Impact of Different Variables on mpg-values in the mtcars-Dataset
+author: "Luis David Bedon Gomez"
+date: "12/9/2017"
+output:
+  pdf_document:
+    fig_crop: no
+  html_document: default
+subtitle: 'Peer-graded Assignment: Regression Models Course Project'
+---
+
+\fontsize{10}{8}
+\selectfont
+
+
+
+
+```{r loadlibraries0, echo=FALSE, include=FALSE}
+library(knitr)
+library(ggplot2)
+library(broom)
+library(dplyr)
+library(extrafont)
+data(mtcars)
+
+```
+
+## Executive Summary
+
+This report presents three different regression models to quantify influencing factors in the $mpg$-values of the mtcars-dataset. The first one examines the $mpg$-Values as a function of the transmission type $am$ as a unique predictor, in which cars with manual transmission show on average a 7 mpg better performance. However, this model can only explain about 34% of the variance of the $mpg$-Variable. The second model incorporates the car's weight $wt$ as a predictor. Now weight has a stronger negative influence on $mpg$ than $am$. Though, ANOVA results shows significance for both variables and an increase in the $adj.R^2$ up to 74% is achieved. In a third model, the interaction term between $am$ and $wt$ is considered, as well as main effects and interaction between $qsec$ and $hp$. About 89% of the $mpg$'s variance can be explained with this final model, that shows a consistent random distribution of residuals.
+
+## 1. Exploratory Data Analysis
+
+We begin by taking a look at the documentation for the mtcars-dataset, which contains data taken from the Motor Trend US magazine comparing 32 different automobiles (1973–74 models), published in 1974.
+
+The mtcars-dataset is a tidy dataset with 11 variables and 32 observations per variable, one for each of the cars. The variables comprise performance and technical configuration data. The performed exploration can be found in section A1 of the Appendix.
+
+## 2.1 Model 1: Variable "am" as unique predictor
+For the first model we take the variable *am* as a unique, categorical predictor.
+
+***- Regression Coefficients***
+
+The regression coefficients are calculated with the standard $lm$-function.
+
+The variable *am* is a binary categorical variable with $am=0 \Leftrightarrow \text{automatic transmission}$ and   $am=1 \Leftrightarrow \text{manual transmission}$.
+
+We know from the lecture, that in this case the coefficients have the meaning $\beta_0=\overline{mpg}_\text{automatic}$ and $\beta_1+\beta_0=\overline{mpg}_\text{manual}$ (s. Appendix A2.1) and obtain:
+
+```{r, echo=FALSE }
+# Regression one cateegorical predictor
+fit0<-lm(mpg~factor(am),data=mtcars)
+sumfit<-summary(fit0)
+# Rename the coefficients for better understanding:
+row.names(sumfit$coefficients)<-c("beta0","beta1")
+tablecoef<-data.frame(round(sumfit$coefficients[,1:2],2))
+tablecoef$"t value"<-(sumfit$coefficients[,3])
+tablecoef$"Pr(>|t|)"<-(sumfit$coefficients[,4])
+print(tablecoef)
+
+```
+
+The coefficients are thus statistically significant different from 0, and from the coefficients we can affirm, that cars with manual transmission achieve in general a $\beta_1=7.24mpg$ higher mpg-value than cars with automatic transmission, holding all other variables constant.
+
+***- Residuals***
+
+```{r, echo=FALSE}
+# Considering Residuals:
+# - Sum of the least squares for mpg:
+lsmpg<-sum((mtcars$mpg-mean(mtcars$mpg))^2)
+# - Sum of the least squares for the classified mpg after am:
+lsmpgam<-sum(fit0$residuals^2)
+
+```
+
+However, we get as the adjusted $R^2$ for this regression model:
+
+```{r, echo=FALSE}
+print(paste("adj. R^2 =",round(sumfit$adj.r.squared,3)))
+```
+This means, that the classification in $automatic\ transmission$ and $manual\ transmission$ can only explain about 34% of the variance of $mpg$.
+
+<!-- $$ -->
+<!-- \sum R^2_{mpg}=\sum_i(mpg_{i}-\overline{mpg})= -->
+<!-- $$ -->
+
+## 2.2 Model 2: Variables "am" and "wt" as predictors
+To perform better than in the past model, now we add the variable $wt$ as a continuous predictor.
+We expect a better result, since the fuel efficiency should be higher in a lighter car than a heavier one.
+
+***- Regression Coefficients***
+The $lm$-function gives us:
+
+```{r, echo=FALSE }
+# Regression one categorical predictor and one continous variable
+fit2_0<-lm(mpg~factor(am)+wt,data=mtcars)
+sumfit2_0<-summary(fit2_0)
+
+tablecoef<-data.frame(round(sumfit2_0$coefficients[,1:2],2))
+tablecoef$"t value"<-(sumfit2_0$coefficients[,3])
+tablecoef$"Pr(>|t|)"<-(sumfit2_0$coefficients[,4])
+print(tablecoef)
+
+```
+Having now include the $wt$ variable, the transmission type looses protagonism, being this a signal, that weight has a considerable importance in the full efficiency of a car. The negative sign confirms the assumption, that a heavier car has a worse fuel efficiency than a lighter one.
+
+***- Residuals***
+
+Performing an ANOVA-analysis (s. Appendix A2.2), we see that, although the variable $wt$ has a major influence on $mpg$ than $am$, the F-statistic shows us, that including both variables is statistically significant. As we know from the lecture, this mean that both variables show linear independence from each other.
+
+
+The $adj.R^2$ for this model is:
+```{r, echo=FALSE}
+print(paste("adj. R^2 =",round(sumfit2_0$adj.r.squared,4)))
+```
+
+The $adj. R^2$ shows a huge improvement of nearly 118% comparing to the only classification of model 2.1. Motivated by this improvement, we will look in a third model, looking for an even better solution.
+
+## 2.3 Model 3: Variables $am*wt$ and $hp*qsec$ as predictors
+
+We consider now the main effects and interactions of $am$ and $wt$ by using the $am*wt$ in the $lm$-function, as well as the variables $hp$ and $qsec$ and their interaction, too. This model is able to explain about 89% of the variance of $mpg$, achieving an increase of nearly 22% in $adj.R^2$ in comparison to the Model 2 above:
+
+```{r, echo=FALSE,fig.width=2.5,fig.height=1}
+# Regression: main effects and interactions
+fit3_0<-lm(mpg~wt*factor(am)+hp*qsec,data=mtcars)
+sumfit3_0<-summary(fit3_0)
+tablecoef<-data.frame(round(sumfit3_0$coefficients[,1:2],2))
+tablecoef$"t value"<-(sumfit3_0$coefficients[,3])
+tablecoef$"Pr(>|t|)"<-(sumfit3_0$coefficients[,4])
+print(paste("adj. R^2 =",round(sumfit3_0$adj.r.squared,5)))
+
+
+```
+
+***- Regression Coefficients and Residuals***
+
+In contrast to the model 2.2, the $wt$-coefficient is no longer significantly different from 0. This does however the negative interaction term $wt:factor(am)$, validating the trend on the model above.
+
+The variable $qsec$ - the 1/4 mile time - having a positive coefficient suggests that a slower car achieve a better $mpg$-value. Surprisingly, the variable $hp$ also shows a positive sign, though being not far for zero, this suggests a slightly better fuel performance for cars with a higher power. The full list of coefficients is:
+
+```{r, echo=FALSE,fig.width=2.5,fig.height=1}
+print(tablecoef)
+```
+
+The residuals (s. Appendix A2.3) show a random distribution, pointing that the chosen linear model gives a good representation of the data. Furthermore, the ANOVA shows significance for all variables with exception of $am$, though necessary for the significant interaction term $wt*am$.
+
+```{r, echo=FALSE,fig.width=2.5,fig.height=1}
+print(anova(fit3_0))
+
+```
+
+
+<!-- ## 4. Conclusions -->
+
+\pagebreak
+
+## Appendix
+### A1. Exploratory data analysis
+
+```{r loadlibraries, echo=FALSE, include=FALSE}
+library(ggplot2)
+library(dplyr)
+
+```
+
+```{r}
+
+data("mtcars") #load the mtcars-data
+
+?mtcars #read documentation
+str(mtcars) #structure of data
+rownames(mtcars) #cars included
+
+```
+
+
+
+### A2.1 - Model 2.1
+
+```{r,echo=TRUE,fig.width=5.5,fig.height=3}
+
+# Regression one categorical predictor
+fit0<-lm(mpg~factor(am),data=mtcars)
+sumfit<-summary(fit0)
+# Rename the coefficients for better understanding:
+row.names(sumfit$coefficients)<-c("beta0","beta1")
+tablecoef<-data.frame(round(sumfit$coefficients[,1:2],2))
+tablecoef$"t value"<-(sumfit$coefficients[,3])
+tablecoef$"Pr(>|t|)"<-(sumfit$coefficients[,4])
+```
+
+```{r,echo=FALSE,fig.width=5.5,fig.height=3,fig.cap="Model 2.1 as a classification of the mpg-values by transmission type."}
+# define colors
+purple<-rgb(.5,.25,.75)
+green<-rgb(.5,.75,.25)
+
+mtcars$am[mtcars$am==0]<-"automatic"
+mtcars$am[mtcars$am==1]<-"manual"
+mtcars$am<-factor(mtcars$am,levels=c("manual","automatic"))# Variable changed to factor
+
+#plot 
+ggplot(data=mtcars)+
+  geom_boxplot(aes(x=factor(am),y=mpg,colour=factor(am),fill=factor(am)))+
+  geom_point(aes(x=factor(am),y=mpg,shape=factor(am),colour=factor(am)),alpha=0.8,show.legend = FALSE)+
+  #geom_point(aes(x=factor(am),y=mpg,),alpha=.5)+
+  scale_color_manual(values=c(green,purple),name="Transmission Type")+
+  scale_fill_manual(values=alpha(c(green,purple),.5),name="Transmission Type")+
+  ggtitle(label="Fuel Efficience vs. Transmission Type")+
+  xlab("")+
+  ylab("Fuel Efficience\n[miles per US gallon]")+
+  theme(text=element_text(family="Bebas Neue Regular"))+
+  theme(text=element_text(size=15))+
+  theme(plot.title=element_text(size=18, vjust=-0))+
+  theme(plot.margin = margin(1, 0, 0, 0, "cm"))
+
+```
+
+
+### A2.2 - Model 2.2
+
+```{r, echo=TRUE}
+# Regression one categorical predictor and one continuous variable
+fit2_0<-lm(mpg~factor(am)+wt,data=mtcars)
+sumfit2_0<-summary(fit2_0)
+
+anova(fit2_0)
+```
+
+
+```{r,echo=FALSE,fig.width=5.5,fig.height=3,fig.cap="Model 2.2 is based on Model 2.1, but includes the continuous predictor $wt$. Note how the regression line, which represent the predicted values (grey), reduces the residuals (red lines) with respect to the ones generated by only taking the mean for each group as the predicted value (pointed lines). This illustrates the huge increase in $adj.R^2$ with respect to Model 2.1."}
+# define colors
+purple<-rgb(.5,.25,.75)
+green<-rgb(.5,.75,.25)
+
+data(mtcars)
+mtcars1<-mtcars
+mtcars1$onlyaut<-mtcars$am
+mtcars1$onlyman<-mtcars1$onlyaut
+mtcars1$onlyman[mtcars$am==0]<-1
+mtcars1$onlyman[mtcars$am==1]<-0
+
+#plot 
+ggplot(data=mtcars1)+
+  #mpg-values and lines
+  geom_point(aes(x=wt,y=mpg,shape=factor(am),colour=factor(am)),alpha=0.8,show.legend = TRUE)+
+  geom_abline(aes(x=wt),intercept=fit2_0$coefficients[1],slope=fit2_0$coefficients[3],colour=rgb(.5,.5,.5))+
+  geom_hline(yintercept=sumfit$coefficients[1],colour=purple,alpha=0.5)+
+  geom_hline(yintercept=sumfit$coefficients[1]+sumfit$coefficients[2],colour=green,alpha=0.5)+
+  
+  #residuals to the means of the groups
+  geom_segment(aes(x=wt,xend=wt,y=mpg,yend=sumfit$coefficients[1]+sumfit$coefficients[2],alpha=factor(am)),colour=green,linetype=2,show.legend = FALSE)+# Residuals to the mean manual transmission
+  geom_segment(aes(x=wt,xend=wt,y=mpg,yend=sumfit$coefficients[1],alpha=factor(onlyman)),colour=purple,linetype=2,show.legend = FALSE)+# Residuals to the mean manual transmission
+  
+    
+  #Residuals to the regression line
+  geom_segment(aes(x=wt,xend=wt,y=mpg,yend=fit2_0$coefficients[1]+fit2_0$coefficients[3]*wt),colour="red",alpha=0.5)+
+ 
+  #Scales
+  scale_alpha_discrete(range=c(0,0.5),guide=FALSE,labels=c("automatic","manual"))+
+  scale_color_manual(values=c(purple,green),name="Transmission Type",labels=c("manual","automatic"),breaks=c(1,0))+
+  scale_shape(name="Transmission Type",labels=c("manual","automatic"),breaks=c(1,0))+
+  
+  #Title & Annotations
+  ggtitle(label="Fuel Efficience vs. Weight/Transmission Type")+
+  xlab("Weight [1000lbs]")+
+  ylab("Fuel Efficience\n[miles per US gallon]")+
+  annotate("text",x=2,y=15.7,label="mean automatic",colour=purple,size=3)+
+  annotate("text",x=5,y=23.5,label="mean manual",colour=green,size=3)+
+  theme(text=element_text(family="Bebas Neue Regular"))+
+  theme(text=element_text(size=15))+
+  theme(plot.title=element_text(size=18, vjust=-0))+
+  theme(plot.margin = margin(1, 0, 0, 0, "cm"))
+
+```
+
+
+
+### A2.3 - Model 2.3
+
+```{r, fig, fig.asp=.666, out.width="50%"}
+# Regression: main effects and interactions
+fit3_0<-lm(mpg~wt*factor(am)+hp*qsec,data=mtcars)
+sumfit3_0<-summary(fit3_0)
+tablecoef<-data.frame(round(sumfit3_0$coefficients[,1:2],2))
+tablecoef$"t value"<-(sumfit3_0$coefficients[,3])
+tablecoef$"Pr(>|t|)"<-(sumfit3_0$coefficients[,4])
+print(tablecoef)
+a<-plot(fit3_0)
+```
+
+
+

@@ -3,8 +3,8 @@ title: "Greedy Algorithm"
 author: "Luis David Bedon Gomez"
 date: "5 9 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 The Greedy Algorithm is an optimization algorithm, that picks up the objects with the greatest value until the constraint is reached. See e.g. <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/lecture-slides-and-files/">Data Science MIT</a>
@@ -162,7 +162,7 @@ ggplot()+
 
 - Possible uses could be:
 
-      - Choosing coins and bills to give the change back after paying cash
+      - Choosing coins and notes to give the change back after paying cash
   
   
   

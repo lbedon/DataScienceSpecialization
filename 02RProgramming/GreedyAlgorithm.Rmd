@@ -3,11 +3,11 @@ title: "Greedy Algorithm"
 author: "Luis David Bedon Gomez"
 date: "5 9 2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
-The Greedy Algorithm is an optimization algorithm, that picks up the objects with the greatest value until the constraint is reached. See e.g. 
+The Greedy Algorithm is an optimization algorithm, that picks up the objects with the greatest value until the constraint is reached. See e.g. <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-0002-introduction-to-computational-thinking-and-data-science-fall-2016/lecture-slides-and-files/">Data Science MIT</a>
 
 If there are more objects with a subsequent value and the value of the objects chosen so far is less then the constraint, the objects with the now highest value are chosen and so on.
 
@@ -83,7 +83,7 @@ print(paste("Constraint=",constraint,"vs. Reached Value=",resvalue))
 ```
 ## Visualization
 
-```{r,message=FALSE}
+```{r,message=FALSE,echo=FALSE}
 library(ggplot2)
 library(extrafont)
 #font_import(pattern="Interstate-Regular")
@@ -158,4 +158,81 @@ ggplot()+
 
 - The greedy algorithm resambles a decomposition in prime numbers
 
-- It represents a up-to-down algorithm with no branches
+- It represents a up-down algorithm with no branches
+
+- Possible uses could be:
+
+      - Choosing coins and bills to give the change back after paying cash
+  
+  
+  
+  
+## Appendix
+
+The code for the plots:
+```{r,message=FALSE,echo=TRUE,results="hide",fig.show='hide'}
+library(ggplot2)
+library(extrafont)
+#font_import(pattern="Interstate-Regular")
+
+# Cumulative table with all objects and values
+numobject<-function(x) as.character(rep(table1$object[x],table1$num[x]))
+cumobject<-sapply(1:length(table1$object),numobject)
+table3<-data.frame(object=unlist(cumobject))
+table3$value<-sapply(1:length(table3$object),
+                     function(x) table1$value[table1$object==table3$object[x]])
+
+subset_t3<-function(x) table3[table3$object==as.character(x),2]
+cumsubset_t3<-function(y) {
+              sapply(1:length(subset_t3(y)),
+                     function(x) sum(subset_t3(y)[1:x]))
+              }
+cumallsubset<-sapply(as.character((table1$object)),cumsubset_t3)
+table3$cum<-unlist(cumallsubset)
+
+# Cumulative table after algorithm results
+s<-(sapply(result,function(x) grep(x,table2$object)))
+
+table4<-data.frame(object=table2$object[s],value=table2$value[s])
+table4$cum<-sapply(1:(length(table4$value)),function(x) sum(table4$value[1:x]))
+
+lresult<-length(table(result))
+
+# Plot with all objects and values
+ggplot()+
+  geom_tile(aes(x=table3$object,
+                y=table3$cum-table3$value/2,fill=table3$value),
+            width=.4,
+            height=table3$value,
+            colour="white")+
+  geom_hline(yintercept = constraint,colour=rgb(.95,.55,.55))+
+  annotate("text",x=2,y=constraint-10,label= "Constraint",colour=rgb(.95,.55,.55))+
+  scale_fill_gradient2(low=rgb(.55,.45,.65,1),
+                       high=rgb(.35,.65,.25,.8),
+                       midpoint = 25,mid=rgb(.85,.85,.55,.2))+
+  ggtitle(label="Hypothetical Objects with Number and Values\nsorted alphabetically")+
+  xlab("Hypothetical Objects")+
+  ylab("Hypothetical Value")#+
+  #theme(text=element_text(family="Interstate"))
+
+# Plot showing the algorithm resuts for the given constraint
+ggplot()+
+  geom_tile(aes(x=reorder(table4$object,table4$cum),
+                y=table4$cum-table4$value/2,fill=table4$value),
+            width=.4,
+            height=table4$value,
+            colour="white")+
+  geom_hline(yintercept = constraint,colour=rgb(.95,.55,.55))+
+  annotate("text",x=2,y=constraint-10,label= "Constraint",colour=rgb(.95,.55,.55))+
+  scale_fill_gradient2(low=rgb(.55,.45,.65,1),
+                       high=rgb(.35,.65,.25,.8),
+                       midpoint = 25,mid=rgb(.85,.85,.55,.2))+
+  ggtitle(label="Greedy Algorithm choosing the highest\npossible value of objects")+
+  xlab("Hypothetical Objects")+
+  ylab("Hypothetical Value")
+  
+
+
+  
+
+```

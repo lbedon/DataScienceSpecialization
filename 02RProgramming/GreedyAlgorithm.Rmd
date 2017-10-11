@@ -141,8 +141,8 @@ ggplot()+
                        high=rgb(.35,.65,.25,.8),
                        midpoint = 25,mid=rgb(.85,.85,.55,.2))+
   ggtitle(label="Greedy Algorithm choosing the highest\npossible value of objects")+
-  xlab("Hypothetic Objects")+
-  ylab("Hypothetic Value")+
+  xlab("Hypothetical Objects")+
+  ylab("Hypothetical Value")
   
 
 

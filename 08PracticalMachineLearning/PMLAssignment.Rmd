@@ -1,18 +1,16 @@
 ---
-title: |-
-  Practical Machine Learning Course
-  Peer Graded Assignment
+title: "Three machine learning models to predict the *classe*-outcome in the dataset *Wearable Computing: Accelerometers Data Classification of Body Postures and Movements*"
+subtitle: 'Practical Machine Learning Course, Peer Graded Assisgnment'
 author: "Luis David Bedon Gomez"
 date: "27 9 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
-\LaTex
 
 # 1. Executive summary
-The following report describes two machine learning models to predict the way in which exercises were done after the data collected by Ugulino et al. in "Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements".
+The following report describes three machine learning models to predict the way in which exercises were done after the data collected by Ugulino et al. in "Wearable Computing: Accelerometers' Data Classification of Body Postures and Movements".
 
 Ugulino et al. consider 5 activity classes, gathered from 4 subjects wearing accelerometers mounted on four different parts of the body and provide a public domain dataset comprising 165,633 samples.
 
@@ -40,7 +38,7 @@ library(knitr)
 #library(dplyr)
 
 # Download the data
-setwd("~/Coursera/08PracticalMachineLearning")
+setwd("~/DataScienceSpecialization/08PracticalMachineLearning")
 if(file.exists("pml-training.csv")==FALSE){
   urlTrain<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
   urlTest<-"https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
@@ -154,21 +152,23 @@ The results can be seen in the following table. The code used for each model can
 |CART *rpart*    |66%|    75/25     | 52 |    -    | 6  |  
 |Random Tree *rf*|87.19%|    75/25     | 4  | ntree=10 | 23  |
 |Random Tree *rf*|88.21%|    75/25     | 4  | ntree=100 | 138  |
-|Random Tree *rf*|**99.6%**|    75/25     | 52 | ntree=10 | 131  | 
+|Random Tree *rf*|**99.63%**|    75/25     | 52 | ntree=10 | 131  | 
 |Boosting *gbm*  |48%|    75/25     | 52 | shrinkage=0.01, ntree=100  |   8.5   | 
 |Boosting *gbm*  |97.1%|    75/25     | 52 | shrinkage 0.7, ntree=100  |   8.6   | 
-|Boosting *gbm*  |**99.55%**|    75/25     | 52 | shrinkage 0.7, ntree=300  |   24.7 | 
+|Boosting *gbm*  |**99.55%**|    75/25     | 52 | shrinkage 0.7, ntree=300  |   **24.7** | 
 
 
 # 4. Results
 
 From the results in the table presented in section 3 we corroborate several concepts tough in class:
 
-- It is extremely important to avoid overfitting by making subpartitions of the training data. We see this in the first CART model with the overfitted data  and an accuracy of only ...%. Choosing the data partition improved the final accuracy to ...%
+- It is extremely important to avoid overfitting by making subpartitions of the training data. We see this in the first CART model with the overfitted data and an accuracy of only ...%. Choosing the data partition improved the final accuracy to ...%
 
 - The predictions rely on the quality of the collected data and small amounts of data can not be compensated by better algorithms. The prediction accuracy is enormously better taking the 53 columns than only a few of them.
 
-- Both Random Forest and Boosting reach a very high accuracy of 99.x% and 99.y% respectively. The training time for the RF-method was 2.11min compared to only xs for boosting. 
+- Both Random Forest and Boosting reach a very high accuracy of 99.6% and 99.y% respectively. The training time for the RF-method was 2.11min compared to only 24.7s for boosting. 
+
+- The shrinkage plays a very important role in the boosting algorithm. Here, a high shrinkage value produced a considerable better result, increasing the accuracy in more then 100%, from 48% to 97.1%.
 
 The prediction for the quiz was doing two times, one with the RF-model and the Boosting-model. Both methods give the following results:
 
@@ -210,7 +210,8 @@ inTrain<-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
 RFtrain<-pml_training2[inTrain,]
 RFtest<-pml_training2[-inTrain,]
 t1<-Sys.time()
-modelFitRF3<-train(classe~roll_belt+pitch_belt+yaw_belt+total_accel_belt,method="rf",ntree=100,data=RFtrain)
+modelFitRF3<-train(classe~roll_belt+pitch_belt+yaw_belt+total_accel_belt,
+                   method="rf",ntree=100,data=RFtrain)
 t2<-Sys.time()
 predRF3<-predict(modelFitRF3,RFtest)
 confusionMatrix(predRF3,RFtest$classe)
@@ -251,7 +252,11 @@ inTrain<-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
 RFtrain<-pml_training2[inTrain,]
 RFtest<-pml_training2[-inTrain,]
 t1<-Sys.time()
-modelFitBoost<-gbm(classe~.,n.trees=300,data=RFtrain,distribution="multinomial",shrinkage = .7,verbose=FALSE)
+modelFitBoost<-gbm(classe~.,
+                   n.trees=300,
+                   data=RFtrain,
+                   distribution="multinomial",
+                   shrinkage = .7,verbose=FALSE)
 t2<-Sys.time()
 predBoost<-predict.gbm(modelFitBoost,RFtest,n.trees=300)
 predBoost<-predBoost/max(predBoost)                             # normalize

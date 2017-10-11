@@ -2,6 +2,13 @@
 
 This repository contains projects done as part of the Data Science Specialization from the Johns Hopkins University on Coursera.
 
+
+### Practical Machine Learning Course
+
+<a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/08PracticalMachineLearning/PMLAssignment.pdf">
+ Three machine learning models to predict theclasse-outcome in the datasetWearable Computing:Accelerometers Data Classification of Body Posturesand Movements
+ </a>
+
 ### Regression Analysis Course
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/07RegressionModels/PeerGradedAssignment110917.pdf">
  Three Regression Models to Assess the Impact of Different Variables on mpg-values in the mtcars-Dataset </a>

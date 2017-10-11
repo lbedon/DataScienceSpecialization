@@ -2,6 +2,10 @@
 
 This repository contains projects done as part of the Data Science Specialization from the Johns Hopkins University on Coursera.
 
+## Regression Analysis Course
+<a href="Datasethttps://github.com/lbedon/DataScienceSpecialization/blob/master/07RegressionModels/PeerGradedAssignment110917.pdf">
+ Three Regression Models to Assess the Impact of Different Variables on mpg-values in the mtcars-dataset </a>
+
 ## Statistical Inference Course
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/06StatisticalInference/StatisticalInferenceCourseProject.pdf">Simulation of the Exponential Distribution in R and Comparisson with the Central Limit Theorem</a>

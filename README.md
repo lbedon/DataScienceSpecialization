@@ -2,6 +2,10 @@
 
 This repository contains projects done as part of the Data Science Specialization from the Johns Hopkins University on Coursera.
 
+## Statistical Inference Course
+
+<a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/06StatisticalInference/StatisticalInferenceCourseProject.pdf">Simulation of the Exponential Distribution in R and Comparisson with the Central Limit Theorem</a>
+
 ## R Programming
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/02RProgramming/GreedyAlgorithm.pdf">Optimization Problem - Programming a Greedy Algorithm in R</a>
 

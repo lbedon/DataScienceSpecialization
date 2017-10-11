@@ -8,6 +8,6 @@ This repository contains projects done as part of the Data Science Specializatio
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/02RProgramming/cachematrix.R">Caching the Inverse of a Matrix</a>
 
 ## Reproducible Research
-<a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/05ReproducibleResearch/RepData_PeerAssessment1/Project1.pdf">Cleaning Data from a </a>
+<a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/05ReproducibleResearch/RepData_PeerAssessment1/Project1.pdf">Cleaning Data from an Activity Monitoring Dataset </a> 
 
 

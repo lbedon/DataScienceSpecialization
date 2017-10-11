@@ -6,7 +6,7 @@ This repository contains projects done as part of the Data Science Specializatio
 ### Practical Machine Learning Course
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/08PracticalMachineLearning/PMLAssignment.pdf">
- Three machine learning models to predict theclasse-outcome in the datasetWearable Computing:Accelerometers Data Classification of Body Posturesand Movements
+Using CART, Boosting and Random Forests to predict the classe-outcome in WearableComputing: Accelerometers Data Classification of Body Postures and Movements
  </a>
 
 ### Regression Analysis Course

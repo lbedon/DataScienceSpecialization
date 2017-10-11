@@ -6,12 +6,12 @@ This repository contains projects done as part of the Data Science Specializatio
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/06StatisticalInference/StatisticalInferenceCourseProject.pdf">Simulation of the Exponential Distribution in R and Comparisson with the Central Limit Theorem</a>
 
-## R Programming
+## R Programming Course
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/02RProgramming/GreedyAlgorithm.pdf">Optimization Problem - Programming a Greedy Algorithm in R</a>
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/02RProgramming/cachematrix.R">Caching the Inverse of a Matrix</a>
 
-## Reproducible Research
+## Reproducible Research Course
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/05ReproducibleResearch/RepData_PeerAssessment2/RepData_PeerAssessment2_LuisBedonGomez.pdf">Storms across the USA: their impact in population health and economic consequences
   after the *National Weather Service Instruction 10-1605* from August 17, 2007, NOAA </a> 
 

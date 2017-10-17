@@ -452,9 +452,7 @@ modelFitRF3&lt;-train(classe~roll_belt+pitch_belt+yaw_belt+total_accel_belt,
 t2&lt;-Sys.time()
 predRF3&lt;-predict(modelFitRF3,RFtest)
 confusionMatrix(predRF3,RFtest$classe)
-predRF3test&lt;-predict(modelFitRF3,pml_testing2)
-# With 4 variables roll_belt+pitch_belt+yaw_belt+total_accel_belt
-# accuracy 86.97% and 18s computing time with ntree=10. With ntre=100, 138s computing time and 88.21% accuracy.</code></pre>
+predRF3test&lt;-predict(modelFitRF3,pml_testing2)</code></pre>
 <pre class="r"><code>### classe vs all columns and random forest with subpartition
 set.seed(62433)
 inTrain&lt;-createDataPartition(pml_training2$classe,p=.75,list=FALSE)
@@ -464,9 +462,7 @@ t1&lt;-Sys.time()
 modelFitRFpart&lt;-train(classe~.,method=&quot;rf&quot;,ntree=10,data=RFtrain)
 t2&lt;-Sys.time()
 predRFpart&lt;-predict(modelFitRFpart,RFtest)
-confusionMatrix(predRFpart,RFtest$classe) # Accuracy up to 99,63%!!! Und jetzt kein Overfitting!!! In nur 2.11 Minuten!!!!!!!!!!!!
-
-
+confusionMatrix(predRFpart,RFtest$classe)
 ## Final Prediction
 predRFtest&lt;-predict(modelFitRFpart,pml_testing2)
 predRFtest</code></pre>

@@ -215,8 +215,7 @@ t2<-Sys.time()
 predRF3<-predict(modelFitRF3,RFtest)
 confusionMatrix(predRF3,RFtest$classe)
 predRF3test<-predict(modelFitRF3,pml_testing2)
-# With 4 variables roll_belt+pitch_belt+yaw_belt+total_accel_belt
-# accuracy 86.97% and 18s computing time with ntree=10. With ntre=100, 138s computing time and 88.21% accuracy.
+
 ```
 
 
@@ -231,9 +230,7 @@ t1<-Sys.time()
 modelFitRFpart<-train(classe~.,method="rf",ntree=10,data=RFtrain)
 t2<-Sys.time()
 predRFpart<-predict(modelFitRFpart,RFtest)
-confusionMatrix(predRFpart,RFtest$classe) # Accuracy up to 99,63%!!! Und jetzt kein Overfitting!!! In nur 2.11 Minuten!!!!!!!!!!!!
-
-
+confusionMatrix(predRFpart,RFtest$classe)
 ## Final Prediction
 predRFtest<-predict(modelFitRFpart,pml_testing2)
 predRFtest

@@ -1,11 +1,12 @@
 ---
-title: "Using CART, Boosting and Random Forests to predict the *classe*-outcome in the dataset *Wearable Computing: Accelerometers Data Classification of Body Postures and Movements*"
-subtitle: 'Practical Machine Learning Course, Peer Graded Assisgnment'
+title: 'Using CART, Boosting and Random Forests to predict the *classe*-outcome in
+  the dataset *Wearable Computing: Accelerometers Data Classification of Body Postures and Movements*' 
 author: "Luis David Bedon Gomez"
 date: "27 9 2017"
 output:
   pdf_document: default
   html_document: default
+subtitle: Practical Machine Learning Course, Peer Graded Assisgnment
 ---
 
 
@@ -14,11 +15,11 @@ The following report describes three machine learning models to predict the way 
 
 Ugulino et al. consider 5 activity classes, gathered from 4 subjects wearing accelerometers mounted on four different parts of the body and provide a public domain dataset comprising 165,633 samples.
 
-This dataset was loaded. After an exploratory data analysis, 52 covariates were selected to predict the activity classes described in the dataset.
+This dataset was loaded. After an exploratory data analysis, 52 features were selected to predict the activity classes described in the dataset.
 
 A random-tree-model, a random-forest-model and a boosting model were applied strategically changing parameters and comparing the testing accuracy. 
 
-The random-forest-model and the boosting model trained over all 53 variables showed a very well prediction accuracy of 99,6%. 
+The random-forest-model and the boosting model trained over all 52 features showed a very well prediction accuracy of 99,6%. 
 
 Based on this model, the predictions asked in the course were done.
 

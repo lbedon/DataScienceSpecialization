@@ -1,0 +1,25 @@
+---
+title: "LeafletMap"
+author: "Luis David Bedon Gomez"
+date: "17 10 2017"
+output: html_document
+---
+
+# October 17 2017
+
+## PLZ (postal codes) in Hamburg
+
+```{r}
+library(leaflet)
+
+#read the data
+plz<-read.csv("plz.tab",sep="\t")
+
+plz  %>%  leaflet() %>%
+          addTiles() %>%
+          addMarkers(lng=plz$lon[plz$Ort=="Hamburg"],lat=plz$lat[plz$Ort=="Hamburg"],popup=plz$plz[plz$Ort=="Hamburg"],label=as.character(plz$plz[plz$Ort=="Hamburg"]))
+
+ 
+
+
+```

@@ -17,6 +17,11 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/06StatisticalInference/StatisticalInferenceCourseProject.pdf">Simulation of the Exponential Distribution in R and Comparisson with the Central Limit Theorem</a>
 
+### Data Products Course
+
+<a href="https://github.com/lbedon/DataScienceSpecialization/tree/master/09DataProducts"> Leaflet Example </a>
+
+
 ### R Programming Course
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/02RProgramming/GreedyAlgorithm.pdf">Optimization Problem - Programming a Greedy Algorithm in R</a>
 

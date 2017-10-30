@@ -20,7 +20,9 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 ### Data Products Course
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/tree/master/09DataProducts"> Leaflet Example </a>
+
 <a href="https://lbedon.shinyapps.io/dataproductscourse/"> Shiny App for the Fortune Global 2000 dataset 2017 </a>
+
 <a href="https://lbedon.github.io/DataProductsCourse/index.html"> A brief introduction to the Shiny App </a>
 
 
@@ -43,5 +45,27 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 
 
 
+## Certificates
+
+The Course Certificates can be found here:
+
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/URHYMHSMFPPF">Practical Machine Learning </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/CXD7FCWZNLYV">Regression Models </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/33HN7QYNH9LX">Statistical Inference </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/9JYF3PZPHR6G">Getting and Cleaning Data </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/8MEMKE3SHCT4">Reproducible Research </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/MCALPHKK9MME">Exploratory Data Analysis </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/EZMU9JJLM8N3">R Programming </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/H443CV6C82QV">The Data Scientist's Toolbox </a>
+
+<a href="https://www.coursera.org/account/accomplishments/certificate/87LX94BL9Y2U">Developing Data Products </a>
 
 

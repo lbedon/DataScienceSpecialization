@@ -20,6 +20,9 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 ### Data Products Course
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/tree/master/09DataProducts"> Leaflet Example </a>
+<a href="https://lbedon.shinyapps.io/dataproductscourse/"> Shiny App for the Fortune Global 2000 dataset 2017 </a>
+<a href="https://lbedon.github.io/DataProductsCourse/index.html"> A brief introduction to the Shiny App </a>
+
 
 
 ### R Programming Course
@@ -37,5 +40,8 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 
 
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/05ReproducibleResearch/RepData_PeerAssessment1/Project1.pdf">Cleaning Data from an Activity Monitoring Dataset </a> 
+
+
+
 
 

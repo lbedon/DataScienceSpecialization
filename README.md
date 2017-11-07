@@ -26,6 +26,14 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 <a href="https://lbedon.github.io/DataProductsCourse/index.html"> A brief introduction to the Shiny App </a>
 
 
+### Capstone Project
+
+<a href="https://lbedon.shinyapps.io/NextWord/"> Shiny App giving a next word for a given n-gram</a>
+
+
+<a href="http://rpubs.com/lbedon/327530"> A brief introduction to the Shiny App </a>
+
+
 
 ### R Programming Course
 <a href="https://github.com/lbedon/DataScienceSpecialization/blob/master/02RProgramming/GreedyAlgorithm.pdf">Optimization Problem - Programming a Greedy Algorithm in R</a>

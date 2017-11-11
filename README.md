@@ -57,6 +57,7 @@ Using CART, Boosting and Random Forests to predict the classe-outcome in Wearabl
 
 The Course Certificates can be found here:
 
+<a href="https://www.coursera.org/account/accomplishments/specialization/certificate/XWTMMHXJBSDB">Data Science Specialization Certificate </a>
 
 <a href="https://www.coursera.org/account/accomplishments/certificate/URHYMHSMFPPF">Practical Machine Learning </a>
 
